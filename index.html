@@ -3,128 +3,589 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KARZEN Battle Royale</title>
-  <meta name="description" content="Official KARZEN Battle Royale website and privacy policy.">
+  <meta name="theme-color" content="#070a12">
+  <meta name="description" content="KARZEN official website with an optional time-pass bot chase mini-game demo.">
+  <title>KARZEN — Official Website</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #090909;
-      color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      line-height: 1.7;
+    :root {
+      --bg:#070a12; --panel:#101827; --panel2:#142238; --ink:#f4f8ff;
+      --muted:#a5b3c8; --cyan:#43f2d7; --blue:#5b8eff; --pink:#ff4e9b;
+      --line:rgba(214,232,255,.13); --max:1180px;
     }
-    header {
-      padding: 55px 20px;
-      text-align: center;
-      background: linear-gradient(135deg, #171717, #332000);
-      border-bottom: 3px solid #ffbf00;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:86px}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 15% 10%,rgba(30,111,173,.19),transparent 36%),radial-gradient(ellipse at 85% 28%,rgba(123,51,143,.15),transparent 33%),linear-gradient(180deg,#070a12,#09111d 54%,#070a12)}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    ::selection{background:var(--cyan);color:#06110f}
+    .wrap{width:min(var(--max),calc(100% - 42px));margin:auto}
+    .noise{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E")}
+    .cursor-glow{position:fixed;width:330px;height:330px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(63,226,211,.09),transparent 68%);transform:translate(-50%,-50%);transition:opacity .2s}
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(6,10,18,.7);border-bottom:1px solid transparent;backdrop-filter:blur(16px);transition:.3s}
+    .topbar.scrolled{border-color:var(--line);background:rgba(6,10,18,.92);box-shadow:0 10px 35px rgba(0,0,0,.22)}
+    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{font-size:1.55rem;font-weight:1000;letter-spacing:.16em;white-space:nowrap}
+    .brand span{color:var(--cyan);text-shadow:0 0 22px rgba(67,242,215,.4)}
+    .links{display:flex;align-items:center;gap:27px;color:#c0ccde;font-size:.9rem}
+    .links a{position:relative;transition:color .2s}
+    .links a:after{content:"";position:absolute;left:0;bottom:-8px;width:100%;height:2px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+    .links a:hover{color:#fff}.links a:hover:after{transform:scaleX(1)}
+    .menu{display:none;border:1px solid var(--line);background:#111c2b;color:white;padding:8px 12px;border-radius:9px}
+    .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 21px;border-radius:10px;border:1px solid transparent;background:var(--cyan);color:#04110f;font-weight:900;letter-spacing:.015em;overflow:hidden;isolation:isolate;transition:transform .22s,box-shadow .22s,background .22s;cursor:pointer}
+    .btn:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.55),transparent 70%);transform:translateX(-130%);transition:transform .55s}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(67,242,215,.22)}
+    .btn:hover:before{transform:translateX(130%)}
+    .btn.secondary{color:#edf5ff;background:rgba(255,255,255,.055);border-color:var(--line);box-shadow:none}
+    .btn.secondary:hover{border-color:rgba(67,242,215,.5);background:rgba(67,242,215,.08)}
+    .hero{position:relative;min-height:780px;display:flex;align-items:center;overflow:hidden;padding:120px 0 65px}
+    .hero-grid{display:grid;grid-template-columns:.95fr 1.05fr;align-items:center;gap:30px;position:relative;z-index:2}
+    .hero-copy{animation:riseIn .9s cubic-bezier(.2,.8,.2,1) both}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--cyan);font-size:.76rem;font-weight:950;letter-spacing:.2em;text-transform:uppercase}
+    .eyebrow:before{content:"";width:24px;height:1px;background:var(--cyan);box-shadow:0 0 9px var(--cyan)}
+    h1{margin:19px 0 22px;font-size:clamp(4rem,9vw,7.6rem);line-height:.82;letter-spacing:-.085em;font-weight:1000}
+    h1 .line2{display:block;color:var(--cyan);text-shadow:0 0 35px rgba(67,242,215,.23)}
+    .hero-copy p{max-width:510px;color:var(--muted);font-size:1.1rem}
+    .actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:29px}
+    .micro{display:flex;align-items:center;gap:9px;color:#99a9bf;font-size:.81rem;margin-top:27px}
+    .pulse-dot{height:8px;width:8px;border-radius:50%;background:#f5c45d;box-shadow:0 0 0 0 rgba(245,196,93,.6);animation:pulse 1.8s infinite}
+    .hero-visual{position:relative;animation:floatIn 1.1s .15s cubic-bezier(.2,.8,.2,1) both;transform-style:preserve-3d}
+    .hero-visual svg{width:100%;height:auto;display:block;filter:drop-shadow(0 35px 55px rgba(0,0,0,.45))}
+    .orbit{position:absolute;border:1px solid rgba(99,244,226,.25);border-radius:50%;inset:10% 4%;transform:rotate(-21deg);animation:orbitSpin 22s linear infinite}
+    .orbit:before,.orbit:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan)}
+    .orbit:before{top:12%;left:15%}.orbit:after{bottom:12%;right:14%;background:var(--pink);box-shadow:0 0 20px var(--pink)}
+    .float-tag{position:absolute;padding:9px 13px;border-radius:9px;border:1px solid rgba(67,242,215,.3);background:rgba(7,17,29,.78);backdrop-filter:blur(10px);color:#d9fff9;font-size:.72rem;font-weight:850;letter-spacing:.1em;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:tagFloat 4s ease-in-out infinite}
+    .tag-one{top:17%;left:0}.tag-two{right:0;bottom:17%;animation-delay:-2s}
+    .scan{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.4;filter:blur(1px);animation:scan 5s linear infinite}
+    .stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+    .star{position:absolute;width:2px;height:2px;border-radius:50%;background:#b7fff6;box-shadow:0 0 9px #43f2d7;animation:twinkle 3s ease-in-out infinite}
+    .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;color:#7f91a9;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase}
+    .scroll-cue i{display:block;width:1px;height:30px;background:linear-gradient(var(--cyan),transparent);animation:scrollLine 1.5s ease-in-out infinite}
+    .ticker{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(12,24,38,.8)}
+    .ticker-track{display:flex;width:max-content;gap:34px;padding:14px 0;animation:marquee 28s linear infinite;color:#bdd0e1;font-weight:900;letter-spacing:.17em;font-size:.78rem}
+    .ticker-track span{white-space:nowrap}.ticker-track b{color:var(--cyan)}
+    section{padding:105px 0;position:relative}
+    .section-head{max-width:700px;margin-bottom:42px}
+    .section-head h2{font-size:clamp(2.45rem,5.5vw,4.4rem);line-height:.98;letter-spacing:-.065em;margin:13px 0}
+    .section-head p{max-width:620px;color:var(--muted);margin:0}
+    .reveal{opacity:0;transform:translateY(35px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.75,.2,1)}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+    .feature{position:relative;padding:26px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(21,39,61,.86),rgba(12,20,33,.93));overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s}
+    .feature:before{content:"";position:absolute;width:170px;height:170px;right:-90px;top:-95px;border-radius:50%;background:rgba(67,242,215,.1);filter:blur(5px);transition:transform .45s}
+    .feature:hover{transform:translateY(-8px);border-color:rgba(67,242,215,.48);box-shadow:0 20px 45px rgba(0,0,0,.24)}
+    .feature:hover:before{transform:scale(1.7)}
+    .feature-icon{width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(67,242,215,.25);border-radius:13px;background:rgba(67,242,215,.08);font-size:1.4rem;transition:transform .35s}
+    .feature:hover .feature-icon{transform:rotate(-8deg) scale(1.1)}
+    .feature h3{margin:16px 0 6px}.feature p{color:var(--muted);font-size:.93rem;margin:0}
+    .modes-bg{background:linear-gradient(180deg,transparent,rgba(23,51,77,.2),transparent)}
+    .mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .mode{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#0d1726;transition:transform .35s,border-color .35s}
+    .mode:hover{transform:translateY(-9px);border-color:rgba(67,242,215,.45)}
+    .mode-art{height:205px;position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 48%,rgba(67,242,215,.18),transparent 59%),linear-gradient(135deg,#132b45,#0b1220)}
+    .mode-art:after{content:"";position:absolute;inset:-80% -40%;background:linear-gradient(110deg,transparent 42%,rgba(255,255,255,.08),transparent 56%);transform:translateX(-45%);transition:transform .8s}
+    .mode:hover .mode-art:after{transform:translateX(45%)}
+    .mode-art svg{width:92%;height:92%;position:relative;z-index:1;transition:transform .45s}
+    .mode:hover .mode-art svg{transform:scale(1.07) translateY(-3px)}
+    .mode-copy{padding:20px 21px 23px}.mode-copy h3{margin:0 0 6px}.mode-copy p{margin:0;color:var(--muted);font-size:.91rem}
+    .showcase-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .showcase-frame{position:relative;border:1px solid var(--line);border-radius:23px;padding:13px;background:linear-gradient(145deg,#192e48,#0b1320);box-shadow:0 30px 80px rgba(0,0,0,.3);overflow:hidden}
+    .showcase-frame:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,rgba(67,242,215,.12),transparent 55%);transform:translateX(-100%);animation:frameShine 7s ease-in-out infinite}
+    .showcase-frame svg{display:block;width:100%;border-radius:13px;position:relative}
+    .showcase-copy h2{font-size:clamp(2.4rem,5vw,4rem);line-height:.98;letter-spacing:-.06em;margin:13px 0}
+    .showcase-copy p{color:var(--muted)}
+    .checklist{padding:0;margin:22px 0 28px;list-style:none}
+    .checklist li{padding:8px 0;color:#d6e2f2}.checklist li:before{content:"✦";color:var(--cyan);margin-right:12px}
+    .skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .skin{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(155deg,#15253a,#0d1522);transition:transform .3s,border-color .3s}
+    .skin:hover{transform:translateY(-7px) scale(1.015);border-color:rgba(91,142,255,.65)}
+    .skin-art{height:185px;display:grid;place-items:center;position:relative;background:radial-gradient(circle,rgba(91,142,255,.2),transparent 65%),#0b1422;overflow:hidden}
+    .skin-art:after{content:"";position:absolute;bottom:-70px;width:150px;height:35px;border-radius:50%;background:rgba(67,242,215,.19);filter:blur(17px)}
+    .skin-art svg{height:150px;position:relative;z-index:1;filter:drop-shadow(0 10px 12px rgba(0,0,0,.35));transition:transform .45s}
+    .skin:hover .skin-art svg{transform:translateY(-8px) rotate(3deg)}
+    .skin-copy{padding:14px 15px}.skin-copy h3{font-size:.9rem;margin:0;letter-spacing:.04em}.skin-copy p{font-size:.78rem;color:var(--muted);margin:3px 0 0}
+    .cta{position:relative;text-align:center;overflow:hidden;padding:66px 24px;border:1px solid rgba(67,242,215,.25);border-radius:25px;background:radial-gradient(ellipse at 50% 0%,rgba(67,242,215,.16),transparent 55%),linear-gradient(135deg,#13263a,#0d1422)}
+    .cta:before,.cta:after{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(67,242,215,.12);border-radius:50%;top:-160px;left:calc(50% - 130px);animation:ring 7s linear infinite}
+    .cta:after{width:360px;height:360px;top:-210px;left:calc(50% - 180px);animation-delay:-3.5s}
+    .cta>*{position:relative;z-index:1}
+    .cta h2{font-size:clamp(2.5rem,6vw,4.7rem);line-height:.95;letter-spacing:-.07em;margin:14px 0}
+    .cta p{max-width:620px;color:var(--muted);margin:14px auto 26px}
+    footer{border-top:1px solid var(--line);padding:28px 0;color:#8494aa;font-size:.84rem}
+    .footer-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .footer-brand{font-size:1.2rem;font-weight:1000;letter-spacing:.15em;color:#fff}.footer-brand span{color:var(--cyan)}
+    .fine{font-size:.75rem;color:#718197;margin-top:6px}
+    .back-top{position:fixed;right:22px;bottom:22px;width:43px;height:43px;display:grid;place-items:center;border-radius:12px;background:rgba(67,242,215,.14);border:1px solid rgba(67,242,215,.35);color:var(--cyan);opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:30}
+    .back-top.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    @keyframes riseIn{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes floatIn{from{opacity:0;transform:translateY(25px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,196,93,.55)}70%{box-shadow:0 0 0 9px rgba(245,196,93,0)}100%{box-shadow:0 0 0 0 rgba(245,196,93,0)}}
+    @keyframes orbitSpin{to{transform:rotate(339deg)}}
+    @keyframes tagFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+    @keyframes scan{0%{transform:translateY(0);opacity:0}10%{opacity:.5}90%{opacity:.35}100%{transform:translateY(600px);opacity:0}}
+    @keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.5)}}
+    @keyframes scrollLine{0%,100%{transform:scaleY(.65);transform-origin:top;opacity:.4}50%{transform:scaleY(1);opacity:1}}
+    @keyframes marquee{to{transform:translateX(-50%)}}
+    @keyframes frameShine{0%,50%{transform:translateX(-100%)}80%,100%{transform:translateX(100%)}}
+    @keyframes ring{to{transform:rotate(360deg)}}
+
+    /* EXTRA MOTION PACK */
+    .ambient-mesh{position:fixed;inset:-20%;z-index:-2;pointer-events:none;opacity:.35;filter:blur(55px);
+      background:conic-gradient(from 0deg at 50% 50%,rgba(67,242,215,.13),rgba(91,142,255,.12),rgba(255,78,155,.09),rgba(67,242,215,.13));
+      animation:meshDrift 24s ease-in-out infinite alternate}
+    #particleCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.55}
+    .intro-loader{position:fixed;inset:0;z-index:1000;background:#070a12;display:grid;place-items:center;transition:opacity .8s ease,visibility .8s ease}
+    .intro-loader.done{opacity:0;visibility:hidden}
+    .loader-inner{text-align:center}
+    .loader-logo{font-size:clamp(3rem,10vw,6rem);font-weight:1000;letter-spacing:.17em;animation:logoPulse 1.2s ease-in-out infinite}
+    .loader-logo span{color:var(--cyan);text-shadow:0 0 30px var(--cyan)}
+    .loader-line{width:min(240px,65vw);height:3px;margin:18px auto;background:#172437;overflow:hidden;border-radius:9px}
+    .loader-line:after{content:"";display:block;height:100%;width:45%;background:var(--cyan);box-shadow:0 0 15px var(--cyan);animation:loaderRun .9s ease-in-out infinite}
+    .loader-label{color:#8ca3bc;font-size:.68rem;letter-spacing:.28em}
+    .hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;
+      background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.035) 4px 5px);
+      animation:scanlines 9s linear infinite}
+    .hero-visual{will-change:transform}
+    .hero-visual svg{animation:heroBob 6s ease-in-out infinite}
+    .hero-visual:after{content:"";position:absolute;inset:12% 7%;border:1px solid rgba(67,242,215,.12);border-radius:45%;
+      transform:rotate(-12deg) scale(1.08);animation:radarPulse 4s ease-out infinite;pointer-events:none}
+    .hud-corner{position:absolute;width:42px;height:42px;border-color:var(--cyan);border-style:solid;opacity:.65;pointer-events:none}
+    .hud-tl{top:0;left:0;border-width:2px 0 0 2px}.hud-br{bottom:0;right:0;border-width:0 2px 2px 0}
+    .section-head h2{background:linear-gradient(100deg,#fff 15%,#9ffcf0 45%,#fff 70%);background-size:220% auto;
+      -webkit-background-clip:text;background-clip:text;color:transparent;animation:textShimmer 8s linear infinite}
+    .feature,.mode,.skin{transform-style:preserve-3d;will-change:transform}
+    .feature:after,.mode:before,.skin:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+      background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.12) 48%,transparent 68%);transform:translateX(-100%);transition:opacity .2s}
+    .feature:hover:after,.mode:hover:before,.skin:hover:before{opacity:1;animation:cardGlint .9s ease}
+    .mode,.skin{position:relative}
+    .mode-art svg{animation:artHover 5s ease-in-out infinite}
+    .mode:nth-child(2) .mode-art svg{animation-delay:-1.7s}.mode:nth-child(3) .mode-art svg{animation-delay:-3.1s}
+    .feature-icon{animation:iconBreathe 4s ease-in-out infinite}
+    .ticker-track{will-change:transform}
+    .ticker:hover .ticker-track{animation-play-state:paused}
+    .section-divider{height:1px;width:100%;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),transparent);opacity:.35;transform-origin:left;animation:dividerGlow 5s ease-in-out infinite}
+    .cta .btn{animation:ctaPulse 3s ease-in-out infinite}
+    .back-top{overflow:hidden}.back-top:after{content:"";position:absolute;inset:-50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-150%) rotate(25deg)}
+    .back-top:hover:after{transform:translateX(150%) rotate(25deg);transition:transform .7s}
+    @keyframes meshDrift{0%{transform:translate(-4%,-3%) rotate(0) scale(1)}50%{transform:translate(4%,3%) rotate(120deg) scale(1.12)}100%{transform:translate(-2%,5%) rotate(240deg) scale(.96)}}
+    @keyframes logoPulse{0%,100%{opacity:.7;filter:drop-shadow(0 0 0 transparent);transform:scale(.98)}50%{opacity:1;filter:drop-shadow(0 0 22px rgba(67,242,215,.3));transform:scale(1.02)}}
+    @keyframes loaderRun{0%{transform:translateX(-120%)}100%{transform:translateX(260%)}}
+    @keyframes scanlines{0%{background-position:0 0}100%{background-position:0 100px}}
+    @keyframes heroBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    @keyframes radarPulse{0%{opacity:.65;transform:rotate(-12deg) scale(.9)}100%{opacity:0;transform:rotate(8deg) scale(1.2)}}
+    @keyframes textShimmer{to{background-position:220% center}}
+    @keyframes cardGlint{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    @keyframes artHover{0%,100%{translate:0 0}50%{translate:0 -5px}}
+    @keyframes iconBreathe{0%,100%{filter:drop-shadow(0 0 0 rgba(67,242,215,0))}50%{filter:drop-shadow(0 0 9px rgba(67,242,215,.3))}}
+    @keyframes dividerGlow{0%,100%{opacity:.2;transform:scaleX(.65)}50%{opacity:.65;transform:scaleX(1)}}
+    @keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(67,242,215,0)}50%{box-shadow:0 0 25px 1px rgba(67,242,215,.16)}}
+
+    @media(max-width:850px){
+      .hero{min-height:auto;padding:135px 0 90px}.hero-grid,.showcase-grid{grid-template-columns:1fr}
+      .hero-grid{gap:22px}.hero-visual{max-width:680px;margin:auto;width:100%}
+      .feature-grid,.mode-grid{grid-template-columns:repeat(2,1fr)}.skin-grid{grid-template-columns:repeat(2,1fr)}
     }
-    h1 {
-      color: #ffc400;
-      font-size: clamp(38px, 8vw, 68px);
-      margin: 0;
-      letter-spacing: 5px;
+    @media(max-width:620px){
+      .wrap{width:calc(100% - 30px)}.nav{height:67px}.menu{display:block}
+      .links{display:none;position:absolute;top:67px;left:0;right:0;padding:18px 22px 22px;background:rgba(6,10,18,.98);border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:18px}
+      .links.open{display:flex}.nav-cta{display:none}
+      .hero{padding:118px 0 75px}h1{font-size:clamp(3.8rem,18vw,5.8rem)}
+      .hero-copy p{font-size:1rem}.float-tag{font-size:.58rem;padding:7px 9px}
+      section{padding:75px 0}.feature-grid,.mode-grid{grid-template-columns:1fr}.mode-art{height:185px}
+      .skin-grid{gap:10px}.skin-art{height:145px}.skin-art svg{height:120px}
+      .showcase-grid{gap:28px}.scroll-cue{bottom:15px}
     }
-    header p { color: #ddd; }
-    main {
-      max-width: 850px;
-      margin: 35px auto;
-      padding: 0 20px;
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+      .reveal{opacity:1;transform:none}
     }
-    section {
-      background: #151515;
-      border: 1px solid #353535;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-    h2 { color: #ffc400; }
-    a { color: #ffd34d; }
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #aaa;
-      border-top: 1px solid #333;
-    }
+
+    /* Interactive bot-chase demo */
+    .chase-shell{border:1px solid rgba(67,242,215,.25);border-radius:22px;padding:12px;background:linear-gradient(145deg,rgba(18,35,55,.96),rgba(7,13,23,.98));box-shadow:0 25px 70px rgba(0,0,0,.35);overflow:hidden}
+    .chase-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 8px 13px;color:#b9cadc;font-size:.78rem;letter-spacing:.12em;font-weight:850}
+    .live-pill{color:#ff7e91;display:inline-flex;align-items:center;gap:8px}.live-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:#ff5b76;box-shadow:0 0 12px #ff5b76;animation:pulse 1s infinite}
+    #chaseCanvas{display:block;width:100%;aspect-ratio:900/430;border-radius:14px;background:#081522;touch-action:none;cursor:crosshair}
+    .chase-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 7px 5px}
+    .chase-hint{color:#91a4bc;font-size:.82rem}.chase-buttons{display:flex;gap:9px;flex-wrap:wrap}.chase-buttons button{border:1px solid rgba(67,242,215,.3);border-radius:9px;padding:9px 14px;color:#eafefa;background:rgba(67,242,215,.08);font-weight:800;cursor:pointer;transition:.2s}.chase-buttons button:hover{background:rgba(67,242,215,.2);transform:translateY(-2px)}
+    .chase-stats{display:flex;gap:22px;flex-wrap:wrap;color:#aabbd0;font-size:.8rem;padding:4px 8px 8px}.chase-stats b{color:var(--cyan);font-variant-numeric:tabular-nums}
+    @media(max-width:620px){.chase-top{font-size:.66rem}.chase-hint{width:100%}.chase-controls{align-items:flex-start}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>KARZEN</h1>
-    <p>BATTLE ROYALE</p>
-    <p>Official Game Website</p>
+  <div class="intro-loader" id="introLoader" aria-label="Loading KARZEN website">
+    <div class="loader-inner"><div class="loader-logo">KAR<span>ZEN</span></div><div class="loader-line"></div><div class="loader-label">INITIALISING ARENA</div></div>
+  </div>
+  <div class="ambient-mesh"></div><canvas id="particleCanvas"></canvas>
+  <div class="noise"></div><div class="cursor-glow" id="cursorGlow"></div>
+  <header class="topbar" id="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#home" aria-label="KARZEN home">KAR<span>ZEN</span></a>
+      <button class="menu" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="links" id="navLinks">
+        <a href="#about">About</a><a href="#features">Features</a><a href="#modes">Modes</a><a href="#customise">Customise</a><a href="#bot-chase">Time Pass</a>
+      </nav>
+      <a class="btn nav-cta" href="https://yatikdev99.itch.io/karzen" target="_blank" rel="noopener">Play KARZEN ↗</a>
+    </div>
   </header>
 
   <main>
-    <section>
-      <h2>About KARZEN</h2>
-      <p>
-        KARZEN is a battle royale game project being developed for PC
-        and Android. This website provides information about the game
-        and its privacy practices.
-      </p>
+    <section class="hero" id="home">
+      <div class="stars" id="stars"></div><div class="scan"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Enter the arena</div>
+          <h1>THIS IS<span class="line2">KARZEN.</span></h1>
+          <p>A multiplayer battle experience built around action, teamwork and custom style. Drop in, gear up and make every match yours.</p>
+          <div class="actions">
+            <a class="btn" href="https://yatikdev99.itch.io/karzen" target="_blank" rel="noopener">Play / Download <span>↗</span></a>
+            <a class="btn secondary" href="#features">Explore the game</a>
+          </div>
+          <div class="micro"><span class="pulse-dot"></span> Independent game project · Follow development updates</div>
+        </div>
+        <div class="hero-visual" id="heroVisual">
+          <span class="hud-corner hud-tl"></span><span class="hud-corner hud-br"></span>
+          <div class="orbit"></div>
+          <div class="float-tag tag-one">KARZEN // ARENA</div><div class="float-tag tag-two">SQUAD UP · STAND OUT</div>
+          <svg viewBox="0 0 680 500" role="img" aria-label="Original illustrated futuristic KARZEN arena scene">
+            <defs>
+              <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#294d78"/><stop offset="1" stop-color="#091525"/></linearGradient>
+              <linearGradient id="armor" x2="1" y2="1"><stop stop-color="#e1fffa"/><stop offset=".46" stop-color="#43dfd2"/><stop offset="1" stop-color="#176b91"/></linearGradient>
+              <linearGradient id="car" x2="0" y2="1"><stop stop-color="#8eafff"/><stop offset="1" stop-color="#243d7b"/></linearGradient>
+              <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <rect x="18" y="18" width="644" height="464" rx="28" fill="url(#sky)" stroke="#8eb5d8" stroke-opacity=".38"/>
+            <circle cx="500" cy="115" r="56" fill="#73f6e5" opacity=".12"/>
+            <path d="M20 330L140 230 218 302 320 192 438 310 540 220 660 320V480H20Z" fill="#183451"/>
+            <path d="M20 374L160 288 247 358 370 263 470 365 580 292 660 360V480H20Z" fill="#0e2137"/>
+            <path d="M20 410L660 365V480H20Z" fill="#081321"/>
+            <path d="M52 425L625 386" stroke="#43f2d7" stroke-opacity=".45" stroke-width="3" stroke-dasharray="12 12"/>
+            <g transform="translate(100 315)">
+              <path d="M0 55L40 8H220L270 55L250 92H18Z" fill="url(#car)" stroke="#bfd2ff" stroke-width="3"/>
+              <path d="M63 10L90 -25H175L207 10Z" fill="#142c4b" stroke="#8bb4ff" stroke-width="3"/>
+              <path d="M100 -20H170L190 7H82Z" fill="#59dfdf" opacity=".72"/>
+              <circle cx="63" cy="87" r="22" fill="#070d17" stroke="#a8c5e9" stroke-width="7"/>
+              <circle cx="215" cy="87" r="22" fill="#070d17" stroke="#a8c5e9" stroke-width="7"/>
+              <path d="M14 55H260" stroke="#43f2d7" stroke-width="4"/>
+            </g>
+            <g transform="translate(390 110)">
+              <path d="M83 48L118 65L127 130L109 188L64 188L45 130L51 68Z" fill="url(#armor)" stroke="#d8fffb" stroke-width="3"/>
+              <path d="M55 73L18 104L0 165L25 175L57 125M116 73L154 104L171 165L146 175L115 125" fill="#1a8291" stroke="#b9fff6" stroke-width="3"/>
+              <path d="M63 186L45 265L25 322H66L90 249L110 322H151L126 265L110 186Z" fill="#244f70" stroke="#b9fff6" stroke-width="3"/>
+              <path d="M52 44Q85 -2 119 44L112 83H58Z" fill="#b9fff6" stroke="#efffff" stroke-width="3"/>
+              <path d="M61 52H111L106 68H65Z" fill="#17334d"/><path d="M74 53H99" stroke="#43f2d7" stroke-width="5" filter="url(#glow)"/>
+              <path d="M153 112L213 94" stroke="#b9fff6" stroke-width="8" stroke-linecap="round"/>
+              <path d="M203 88L253 73L259 87L211 105Z" fill="#d7e9f8"/>
+              <path d="M25 171L-3 194M147 171L177 194" stroke="#43f2d7" stroke-width="5"/>
+            </g>
+            <g fill="#43f2d7" filter="url(#glow)"><circle cx="315" cy="100" r="4"/><circle cx="340" cy="130" r="3"/><circle cx="575" cy="255" r="4"/><circle cx="300" cy="250" r="3"/></g>
+            <text x="48" y="68" fill="#c7fff8" font-size="14" font-weight="800" letter-spacing="4">KARZEN ARENA</text>
+            <text x="48" y="91" fill="#a8bad0" font-size="10" letter-spacing="2">SQUAD UP · DROP IN · STAND OUT</text>
+          </svg>
+        </div>
+      </div>
+      <div class="scroll-cue"><i></i> Scroll to explore</div>
     </section>
 
-    <section id="privacy">
-      <h2>Privacy Policy</h2>
-      <p><strong>Last updated:</strong> October 29, 2026</p>
+    <div class="ticker" aria-label="KARZEN tagline">
+      <div class="ticker-track">
+        <span>✦ <b>KARZEN</b> MULTIPLAYER</span><span>✦ BUILD YOUR STYLE</span><span>✦ SQUAD UP</span><span>✦ ENTER THE ARENA</span><span>✦ <b>KARZEN</b> MULTIPLAYER</span><span>✦ BUILD YOUR STYLE</span><span>✦ SQUAD UP</span><span>✦ ENTER THE ARENA</span>
+      </div>
+    </div>
+    <div class="section-divider"></div>
 
-      <h3>Google Sign-In</h3>
-      <p>
-        KARZEN offers Google Sign-In so players can authenticate using
-        their Google Account. When you choose this option, Google may
-        process your information according to Google's privacy policy
-        and the permissions shown during sign-in.
-      </p>
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="eyebrow">The game</div>
+          <h2>Play your way.<br>Make your mark.</h2>
+          <p>KARZEN is an independent game project focused on multiplayer gameplay, player expression and accessible fun. The vision is to bring players together, whatever device they play on.</p>
+        </div>
+        <div class="feature-grid" id="features">
+          <article class="feature reveal"><div class="feature-icon">🌐</div><h3>Multiplayer first</h3><p>Room-based play and matchmaking concepts designed to help friends get into a match together.</p></article>
+          <article class="feature reveal"><div class="feature-icon">📱</div><h3>PC + Android vision</h3><p>A cross-platform direction so desktop and mobile players can share the same game world.</p></article>
+          <article class="feature reveal"><div class="feature-icon">🎨</div><h3>Make it yours</h3><p>Distinct character, vehicle and equipment cosmetics give every player their own look.</p></article>
+        </div>
+      </div>
+    </section>
 
-      <h3>Information and Use</h3>
-      <p>
-        The information made available through Google Sign-In is used
-        only as needed for authentication and the game features that
-        are actually implemented. The game should not request access
-        to unrelated Google data.
-      </p>
+    <section id="modes" class="modes-bg">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="eyebrow">Play styles</div><h2>Find your way<br>into the action.</h2>
+          <p>Explore the different gameplay directions behind KARZEN. Mode details may evolve as development continues.</p>
+        </div>
+        <div class="mode-grid">
+          <article class="mode reveal"><div class="mode-art">
+            <svg viewBox="0 0 300 180" aria-hidden="true"><path d="M0 145L65 70 112 120 177 40 240 115 300 65V180H0Z" fill="#203d62"/><circle cx="150" cy="75" r="32" fill="#43f2d7" opacity=".15"/><path d="M118 130L145 65 172 130M130 108H162" stroke="#b8fff6" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M30 150H270" stroke="#43f2d7" stroke-width="3" stroke-dasharray="9 8"/></svg>
+          </div><div class="mode-copy"><h3>Battle Arena</h3><p>Enter the arena, outplay rivals and work with your squad.</p></div></article>
+          <article class="mode reveal"><div class="mode-art">
+            <svg viewBox="0 0 300 180" aria-hidden="true"><path d="M25 130L55 75H240L275 130L260 150H40Z" fill="#456eaa" stroke="#a9c8ff" stroke-width="4"/><path d="M85 75L105 45H195L220 75Z" fill="#16304f" stroke="#8dece5" stroke-width="3"/><circle cx="85" cy="145" r="17" fill="#080d17" stroke="#9db6db" stroke-width="6"/><circle cx="220" cy="145" r="17" fill="#080d17" stroke="#9db6db" stroke-width="6"/><path d="M25 125H275" stroke="#43f2d7" stroke-width="4"/></svg>
+          </div><div class="mode-copy"><h3>Vehicle Action</h3><p>Bring vehicles into the fight and move around the map with style.</p></div></article>
+          <article class="mode reveal"><div class="mode-art">
+            <svg viewBox="0 0 300 180" aria-hidden="true"><path d="M150 25L235 65V125L150 165 65 125V65Z" fill="#173c54" stroke="#43f2d7" stroke-width="4"/><path d="M150 48L212 78V115L150 144 88 115V78Z" fill="#245e70"/><path d="M112 92L140 120 192 66" fill="none" stroke="#d7fff9" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div><div class="mode-copy"><h3>Squad Play</h3><p>Team up, coordinate your moves and help your friends win.</p></div></article>
+        </div>
+      </div>
+    </section>
 
-      <h3>Storage and Sharing</h3>
-      <p>
-        The way information is stored depends on the features enabled
-        in the game. This policy does not promise that information is
-        stored only on your device. KARZEN does not sell personal
-        information. Information may be processed by Google to provide
-        its sign-in service.
-      </p>
+    <section>
+      <div class="wrap showcase-grid">
+        <div class="showcase-frame reveal">
+          <svg viewBox="0 0 600 430" role="img" aria-label="Stylised sci-fi vehicle in a neon arena">
+            <defs><linearGradient id="vbody" x2="1" y2="1"><stop stop-color="#72f6e0"/><stop offset="1" stop-color="#315b9a"/></linearGradient><linearGradient id="vsky" x2="0" y2="1"><stop stop-color="#172e4e"/><stop offset="1" stop-color="#090f1b"/></linearGradient></defs>
+            <rect width="600" height="430" rx="15" fill="url(#vsky)"/>
+            <circle cx="430" cy="105" r="65" fill="#43f2d7" opacity=".12"/>
+            <path d="M0 280L115 190 198 260 305 150 415 260 520 175 600 245V430H0Z" fill="#122b48"/>
+            <path d="M0 345L600 305V430H0Z" fill="#081321"/>
+            <path d="M45 365L555 333" stroke="#43f2d7" stroke-opacity=".5" stroke-width="3" stroke-dasharray="10 12"/>
+            <g transform="translate(95 210)">
+              <path d="M0 94L55 15H350L410 94L385 154H28Z" fill="url(#vbody)" stroke="#d0fff7" stroke-width="4"/>
+              <path d="M95 18L132 -35H285L330 18Z" fill="#10243e" stroke="#a7c8ff" stroke-width="4"/>
+              <path d="M145 -27H275L307 10H122Z" fill="#68cde0" opacity=".65"/>
+              <path d="M15 91H398" stroke="#d4fff8" stroke-width="6"/>
+              <circle cx="90" cy="148" r="35" fill="#070b12" stroke="#9ebce2" stroke-width="11"/>
+              <circle cx="325" cy="148" r="35" fill="#070b12" stroke="#9ebce2" stroke-width="11"/>
+              <circle cx="90" cy="148" r="12" fill="#43f2d7"/><circle cx="325" cy="148" r="12" fill="#43f2d7"/>
+            </g>
+            <text x="28" y="42" fill="#cafff8" font-size="14" font-weight="800" letter-spacing="4">MOVE DIFFERENT</text>
+          </svg>
+        </div>
+        <div class="showcase-copy reveal">
+          <div class="eyebrow">Made for players</div><h2>More than a match.<br>A whole identity.</h2>
+          <p>Build your presence with character looks, vehicle designs and equipment cosmetics. KARZEN's customisation direction is about giving each item its own identity.</p>
+          <ul class="checklist"><li>Character and outfit concepts</li><li>Vehicle and equipment styling</li><li>Distinct visual themes and collections</li></ul>
+          <a class="btn secondary" href="#customise">View style concepts ↓</a>
+        </div>
+      </div>
+    </section>
 
-      <h3>Security</h3>
-      <p>
-        Reasonable measures should be used to protect account-related
-        information. No method of electronic storage or transmission
-        is completely secure.
-      </p>
+    <section id="customise">
+      <div class="wrap">
+        <div class="section-head reveal"><div class="eyebrow">Your style</div><h2>Cosmetics with<br>personality.</h2><p>A preview of the bold visual direction behind KARZEN cosmetics. These illustrations are concept artwork, not confirmed in-game screenshots.</p></div>
+        <div class="skin-grid">
+          <article class="skin reveal"><div class="skin-art"><svg viewBox="0 0 120 150" aria-hidden="true"><path d="M60 12L85 32 80 65 95 125H25L40 65 35 32Z" fill="#243d77" stroke="#9cbaff" stroke-width="3"/><path d="M39 34L60 22 81 34 73 55H47Z" fill="#a7c9ff"/><path d="M45 43H75L70 51H50Z" fill="#17243f"/><path d="M42 75H78" stroke="#43f2d7" stroke-width="6"/></svg></div><div class="skin-copy"><h3>NEON PHANTOM</h3><p>Futuristic character concept</p></div></article>
+          <article class="skin reveal"><div class="skin-art"><svg viewBox="0 0 120 150" aria-hidden="true"><path d="M60 12L88 38 76 67 93 125H27L44 67 32 38Z" fill="#5d263e" stroke="#ff9cba" stroke-width="3"/><path d="M35 38L60 20 85 38 73 58H47Z" fill="#f3c3d1"/><path d="M44 43L58 49 76 39" stroke="#762a51" stroke-width="5" fill="none"/><path d="M42 78H78" stroke="#ff6b9d" stroke-width="6"/></svg></div><div class="skin-copy"><h3>CRIMSON RIFT</h3><p>Anime-inspired theme concept</p></div></article>
+          <article class="skin reveal"><div class="skin-art"><svg viewBox="0 0 120 150" aria-hidden="true"><path d="M60 12L85 32 80 65 95 125H25L40 65 35 32Z" fill="#28634e" stroke="#a7f0c8" stroke-width="3"/><path d="M39 34L60 22 81 34 73 55H47Z" fill="#c5f7dc"/><path d="M47 42L60 48 73 42" stroke="#174d3d" stroke-width="5" fill="none"/><path d="M42 75H78" stroke="#8df4bc" stroke-width="6"/></svg></div><div class="skin-copy"><h3>JADE STRIKE</h3><p>Elite tactical concept</p></div></article>
+          <article class="skin reveal"><div class="skin-art"><svg viewBox="0 0 120 150" aria-hidden="true"><path d="M60 12L85 32 80 65 95 125H25L40 65 35 32Z" fill="#8a6230" stroke="#ffe0a0" stroke-width="3"/><path d="M39 34L60 22 81 34 73 55H47Z" fill="#ffe6b6"/><path d="M45 43H75" stroke="#765022" stroke-width="5"/><path d="M42 75H78" stroke="#ffc85e" stroke-width="6"/></svg></div><div class="skin-copy"><h3>GOLDEN OVERDRIVE</h3><p>Legendary style concept</p></div></article>
+        </div>
+      </div>
+    </section>
 
-      <h3>Contact</h3>
-      <p>
-        For privacy questions, contact the developer using the contact
-        email provided on the KARZEN Google sign-in consent screen.
-      </p>
 
-      <h3>Changes to This Policy</h3>
-      <p>
-        This policy may be updated when the game's features or
-        information practices change.
-      </p>
+    <section id="bot-chase" class="modes-bg">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="eyebrow">AI training simulation</div>
+          <h2>TIME-PASS<br>BOT CHASE.</h2>
+          <p>This is just a fun time-pass mini-game on the website. It is NOT actual KARZEN gameplay and does not represent how KARZEN plays.</p>
+        </div>
+        <div class="chase-shell reveal">
+          <div class="chase-top"><span>TIME PASS // BOT CHASE MINI-GAME</span><span class="live-pill" id="chaseStatus">BOT ACTIVE</span></div>
+          <canvas id="chaseCanvas" width="900" height="430" aria-label="Time-pass mini-game: a bot chases the player"></canvas>
+          <div class="chase-controls"><div class="chase-hint">⌨ Move: WASD / Arrow keys · Touch: drag on the arena</div><div class="chase-buttons"><button id="chasePause">PAUSE</button><button id="chaseReset">RESET</button></div></div>
+          <div class="chase-stats"><span>BOT DISTANCE: <b id="botDistance">—</b></span><span>TIME SURVIVED: <b id="chaseTime">0.0s</b></span><span>STATUS: <b id="chaseState">ESCAPING</b></span></div>
+        </div>
+      </div>
+    </section>
 
-      <h3>Google Privacy Policy</h3>
-      <p>
-        Read
-        <a href="https://policies.google.com/privacy" target="_blank"
-           rel="noopener noreferrer">Google's Privacy Policy</a>.
-      </p>
+    <section id="play">
+      <div class="wrap">
+        <div class="cta reveal">
+          <div class="eyebrow">Jump into KARZEN</div>
+          <h2>READY FOR THE ARENA?</h2>
+          <p>Get KARZEN from its itch.io page and check the latest available build and developer updates.</p>
+          <a class="btn" href="https://yatikdev99.itch.io/karzen" target="_blank" rel="noopener">PLAY / DOWNLOAD KARZEN ↗</a>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer>
-    &copy; 2026 KARZEN Battle Royale
+    <div class="wrap footer-row">
+      <div><div class="footer-brand">KAR<span>ZEN</span></div><div>© <span id="year"></span> KARZEN Project.</div><div class="fine">Independent game project. Artwork on this page includes original SVG concepts.</div></div>
+      <div>Built for players. Made with passion.</div>
+    </div>
   </footer>
+  <a class="back-top" id="backTop" href="#home" aria-label="Back to top">↑</a>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    const topbar = document.getElementById('topbar');
+    const backTop = document.getElementById('backTop');
+    const glow = document.getElementById('cursorGlow');
+
+    menuBtn.addEventListener('click', () => {
+      const opened = navLinks.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(opened));
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }));
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      topbar.classList.toggle('scrolled', y > 20);
+      backTop.classList.toggle('show', y > 500);
+    }, { passive:true });
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold:.13 });
+    document.querySelectorAll('.reveal').forEach((el, index) => {
+      el.style.transitionDelay = `${(index % 3) * 90}ms`;
+      revealObserver.observe(el);
+    });
+
+    // Small ambient stars are generated locally; no external libraries or assets needed.
+    const stars = document.getElementById('stars');
+    for (let i = 0; i < 42; i++) {
+      const star = document.createElement('span');
+      star.className = 'star';
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 3}s`;
+      star.style.animationDuration = `${2 + Math.random() * 3}s`;
+      stars.appendChild(star);
+    }
+
+    // Mouse glow and subtle hero parallax; disabled for touch and reduced-motion users.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && window.matchMedia('(pointer:fine)').matches) {
+      window.addEventListener('pointermove', event => {
+        glow.style.left = `${event.clientX}px`;
+        glow.style.top = `${event.clientY}px`;
+      }, { passive:true });
+      const heroVisual = document.getElementById('heroVisual');
+      heroVisual.addEventListener('pointermove', event => {
+        const rect = heroVisual.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - .5;
+        const y = (event.clientY - rect.top) / rect.height - .5;
+        heroVisual.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+      });
+      heroVisual.addEventListener('pointerleave', () => heroVisual.style.transform = '');
+    }
+
+
+    // Animated particle field: lightweight canvas, automatically reduced on small/touch devices.
+    const particleCanvas = document.getElementById('particleCanvas');
+    const particleCtx = particleCanvas.getContext('2d');
+    let particles = [];
+    let canvasW = 0, canvasH = 0;
+    const lowMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function resizeParticles() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvasW = window.innerWidth; canvasH = window.innerHeight;
+      particleCanvas.width = Math.floor(canvasW * dpr);
+      particleCanvas.height = Math.floor(canvasH * dpr);
+      particleCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(65, Math.floor(canvasW / 20));
+      particles = Array.from({length: count}, () => ({
+        x: Math.random() * canvasW, y: Math.random() * canvasH,
+        r: .5 + Math.random() * 1.5, vx: (Math.random() - .5) * .22,
+        vy: -.12 - Math.random() * .32, a: .15 + Math.random() * .55
+      }));
+    }
+    let pageVisible = !document.hidden;
+    document.addEventListener('visibilitychange', () => { pageVisible = !document.hidden; });
+    function drawParticles() {
+      if (!pageVisible) { if (!lowMotion) requestAnimationFrame(drawParticles); return; }
+      particleCtx.clearRect(0, 0, canvasW, canvasH);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.y < -5) { p.y = canvasH + 5; p.x = Math.random() * canvasW; }
+        if (p.x < -5) p.x = canvasW + 5;
+        if (p.x > canvasW + 5) p.x = -5;
+        particleCtx.beginPath();
+        particleCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        particleCtx.fillStyle = `rgba(100,245,226,${p.a})`;
+        particleCtx.fill();
+      });
+      if (!lowMotion) requestAnimationFrame(drawParticles);
+    }
+    resizeParticles();
+    if (!lowMotion) drawParticles();
+    window.addEventListener('resize', resizeParticles, {passive:true});
+
+    // Animated intro screen; no external scripts or loading dependency.
+    window.addEventListener('load', () => {
+      window.setTimeout(() => document.getElementById('introLoader').classList.add('done'), 950);
+    });
+
+    // Gentle 3D tilt on cards when a mouse is available.
+    if (!reduceMotion && window.matchMedia('(pointer:fine)').matches) {
+      document.querySelectorAll('.feature,.mode,.skin').forEach(card => {
+        card.addEventListener('pointermove', event => {
+          const r = card.getBoundingClientRect();
+          const px = (event.clientX - r.left) / r.width;
+          const py = (event.clientY - r.top) / r.height;
+          const ry = (px - .5) * 5;
+          const rx = (.5 - py) * 5;
+          card.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-5px)`;
+        });
+        card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+      });
+    }
+
+
+    // Playable bot-chasing-player scene (self-contained canvas demo).
+    (() => {
+      const canvas = document.getElementById('chaseCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const player = {x:145,y:215,r:15,speed:225};
+      const bot = {x:745,y:205,r:19,speed:112,angle:Math.PI};
+      const keys = Object.create(null);
+      const blocks = [{x:310,y:75,w:95,h:55},{x:505,y:285,w:110,h:55},{x:390,y:185,w:70,h:48},{x:145,y:325,w:90,h:38},{x:690,y:70,w:85,h:42}];
+      let running = true, elapsed = 0, last = performance.now(), touchTarget = null, caught = false;
+      const status = document.getElementById('chaseStatus');
+      const pauseBtn = document.getElementById('chasePause');
+      function reset(){player.x=145;player.y=215;bot.x=745;bot.y=205;elapsed=0;caught=false;running=true;touchTarget=null;pauseBtn.textContent='PAUSE';status.textContent='BOT ACTIVE';document.getElementById('chaseState').textContent='ESCAPING';}
+      function circleRect(x,y,r,b){const px=Math.max(b.x,Math.min(x,b.x+b.w)),py=Math.max(b.y,Math.min(y,b.y+b.h));return Math.hypot(x-px,y-py)<r;}
+      function moveEntity(e,dx,dy){let nx=Math.max(e.r+8,Math.min(W-e.r-8,e.x+dx));if(!blocks.some(b=>circleRect(nx,e.y,e.r,b)))e.x=nx;let ny=Math.max(e.r+8,Math.min(H-e.r-8,e.y+dy));if(!blocks.some(b=>circleRect(e.x,ny,e.r,b)))e.y=ny;}
+      function drawArena(t){
+        const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#102a40');g.addColorStop(1,'#07111e');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+        ctx.strokeStyle='rgba(92,220,218,.10)';ctx.lineWidth=1;for(let x=0;x<W;x+=36){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+        ctx.strokeStyle='rgba(67,242,215,.35)';ctx.lineWidth=3;ctx.strokeRect(7,7,W-14,H-14);
+        blocks.forEach((b,i)=>{ctx.fillStyle='#172b40';ctx.strokeStyle='rgba(117,163,194,.48)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,8);ctx.fill();ctx.stroke();ctx.fillStyle='rgba(67,242,215,.16)';ctx.fillRect(b.x+9,b.y+8,b.w-18,3);});
+        ctx.fillStyle='rgba(67,242,215,.18)';ctx.font='800 12px system-ui';ctx.fillText('TIME-PASS ARENA',24,30);
+        ctx.save();ctx.globalAlpha=.3;ctx.strokeStyle='#ff5e7b';ctx.setLineDash([7,9]);ctx.beginPath();ctx.arc(bot.x,bot.y,75+Math.sin(t/250)*5,0,Math.PI*2);ctx.stroke();ctx.restore();
+      }
+      function drawCharacter(e,isBot,t){
+        ctx.save();ctx.translate(e.x,e.y);ctx.rotate(isBot?bot.angle:Math.atan2((keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0),(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0)));
+        ctx.fillStyle='rgba(0,0,0,.38)';ctx.beginPath();ctx.ellipse(3,8,e.r*1.25,e.r*.78,0,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=22;ctx.shadowColor=isBot?'#ff5276':'#43f2d7';ctx.fillStyle=isBot?'#ff5475':'#43f2d7';ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+        ctx.fillStyle=isBot?'#641e38':'#0b3440';ctx.beginPath();ctx.arc(0,0,e.r*.68,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#f3ffff';ctx.fillRect(2,-6,9,4);ctx.fillRect(2,3,9,4);
+        ctx.fillStyle=isBot?'#ff9aae':'#bafff5';ctx.beginPath();ctx.moveTo(e.r+8,0);ctx.lineTo(e.r-1,-6);ctx.lineTo(e.r-1,6);ctx.closePath();ctx.fill();
+        ctx.restore();ctx.fillStyle='#e8f3ff';ctx.font='800 11px system-ui';ctx.textAlign='center';ctx.fillText(isBot?'HUNTER BOT':'YOU',e.x,e.y-e.r-13);ctx.textAlign='left';
+      }
+      function frame(now){const dt=Math.min((now-last)/1000,.035);last=now;if(running&&!caught){elapsed+=dt;
+        let dx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),dy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+        if(touchTarget){dx=touchTarget.x-player.x;dy=touchTarget.y-player.y;const m=Math.hypot(dx,dy);if(m<8)touchTarget=null;else{dx/=m;dy/=m;}}
+        const m=Math.hypot(dx,dy);if(m){dx/=m;dy/=m;moveEntity(player,dx*player.speed*dt,dy*player.speed*dt)}
+        let bx=player.x-bot.x,by=player.y-bot.y,dist=Math.hypot(bx,by)||1;bot.angle=Math.atan2(by,bx);
+        if(dist>player.r+bot.r+3){moveEntity(bot,bx/dist*bot.speed*dt,by/dist*bot.speed*dt)}else{caught=true;document.getElementById('chaseState').textContent='CAUGHT!';status.textContent='PLAYER CAUGHT';}
+        document.getElementById('botDistance').textContent=Math.round(dist)+' px';document.getElementById('chaseTime').textContent=elapsed.toFixed(1)+'s';
+      }
+      drawArena(now);drawCharacter(player,false,now);drawCharacter(bot,true,now);
+      if(caught){ctx.fillStyle='rgba(3,8,15,.62)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle='#ff7791';ctx.font='1000 42px system-ui';ctx.fillText('BOT CAUGHT YOU!',W/2,H/2);ctx.fillStyle='#e6f2ff';ctx.font='600 16px system-ui';ctx.fillText('Press RESET to try again',W/2,H/2+32);ctx.textAlign='left';}
+      requestAnimationFrame(frame);
+      }
+      window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;});window.addEventListener('keyup',e=>keys[e.key]=false);
+      function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+      canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);touchTarget=pointerPos(e)});canvas.addEventListener('pointermove',e=>{if(e.buttons)touchTarget=pointerPos(e)});canvas.addEventListener('pointerup',()=>touchTarget=null);canvas.addEventListener('pointercancel',()=>touchTarget=null);
+      pauseBtn.addEventListener('click',()=>{running=!running;pauseBtn.textContent=running?'PAUSE':'RESUME';status.textContent=running?'BOT ACTIVE':'PAUSED';last=performance.now();});document.getElementById('chaseReset').addEventListener('click',reset);
+      requestAnimationFrame(frame);
+    })();
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
