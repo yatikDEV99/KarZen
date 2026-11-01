@@ -208,6 +208,40 @@
     .chase-hint{color:#91a4bc;font-size:.82rem}.chase-buttons{display:flex;gap:9px;flex-wrap:wrap}.chase-buttons button{border:1px solid rgba(67,242,215,.3);border-radius:9px;padding:9px 14px;color:#eafefa;background:rgba(67,242,215,.08);font-weight:800;cursor:pointer;transition:.2s}.chase-buttons button:hover{background:rgba(67,242,215,.2);transform:translateY(-2px)}
     .chase-stats{display:flex;gap:22px;flex-wrap:wrap;color:#aabbd0;font-size:.8rem;padding:4px 8px 8px}.chase-stats b{color:var(--cyan);font-variant-numeric:tabular-nums}
     @media(max-width:620px){.chase-top{font-size:.66rem}.chase-hint{width:100%}.chase-controls{align-items:flex-start}}
+
+    /* KARZEN animated system specifications */
+    .specs-section{overflow:hidden;background:linear-gradient(180deg,rgba(12,27,43,.35),rgba(7,10,18,.15))}
+    .specs-heading{text-align:center;max-width:760px;margin:0 auto 48px}
+    .specs-heading .eyebrow{justify-content:center}
+    .specs-heading h2{font-size:clamp(2.6rem,6vw,4.8rem);line-height:.95;letter-spacing:-.07em;margin:15px 0}
+    .specs-heading h2 span{color:var(--cyan);text-shadow:0 0 28px rgba(67,242,215,.3)}
+    .specs-heading p{color:var(--muted);margin:0}
+    .specs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+    .spec-card{position:relative;padding:28px;border:1px solid rgba(67,242,215,.2);border-radius:20px;background:linear-gradient(145deg,rgba(18,36,57,.94),rgba(8,15,27,.97));overflow:hidden;isolation:isolate;transition:transform .35s,border-color .35s,box-shadow .35s}
+    .spec-card:before{content:"";position:absolute;inset:-1px;z-index:-1;background:linear-gradient(115deg,transparent 20%,rgba(67,242,215,.13),transparent 60%);transform:translateX(-110%);transition:transform .8s}
+    .spec-card:hover{transform:translateY(-8px);border-color:rgba(67,242,215,.65);box-shadow:0 25px 65px rgba(0,0,0,.32),0 0 35px rgba(67,242,215,.08)}
+    .spec-card:hover:before{transform:translateX(110%)}
+    .spec-card-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+    .spec-icon{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border-radius:16px;background:rgba(67,242,215,.1);border:1px solid rgba(67,242,215,.3);font-size:1.8rem;box-shadow:0 0 25px rgba(67,242,215,.08);animation:specFloat 4s ease-in-out infinite}
+    .spec-card h3{font-size:1.55rem;letter-spacing:.08em;margin:0}
+    .spec-card-head p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+    .spec-level{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px;padding-bottom:9px;border-bottom:1px solid var(--line);font-size:.72rem;font-weight:950;letter-spacing:.12em;color:#d9e8f8}
+    .spec-status{font-size:.61rem;color:var(--cyan);border:1px solid rgba(67,242,215,.25);background:rgba(67,242,215,.07);padding:4px 7px;border-radius:5px;white-space:nowrap}
+    .spec-level.recommended{margin-top:24px}
+    .spec-level.recommended .spec-status{color:#ffd27b;border-color:rgba(255,210,123,.3);background:rgba(255,210,123,.07)}
+    .spec-list{display:grid;gap:0}
+    .spec-row{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.055);font-size:.88rem}
+    .spec-row span{color:#98a9bf}
+    .spec-row b{text-align:right;color:#f1f7ff;font-weight:800}
+    .spec-footer{margin-top:21px;padding:10px 12px;border-radius:8px;background:rgba(67,242,215,.06);color:var(--cyan);font-size:.68rem;font-weight:900;letter-spacing:.13em;text-align:center}
+    .download-size{max-width:700px;margin:28px auto 0;padding:22px 25px;border:1px solid rgba(91,142,255,.3);border-radius:16px;background:linear-gradient(110deg,rgba(35,69,115,.2),rgba(67,242,215,.06));display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .download-size small{display:block;color:var(--muted);font-size:.7rem;letter-spacing:.13em;font-weight:900}
+    .download-size strong{font-size:1.8rem;color:var(--cyan);text-shadow:0 0 20px rgba(67,242,215,.2)}
+    .download-size p{width:100%;margin:-8px 0 0;color:#9eafc5;font-size:.82rem}
+    @keyframes specFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    @media(max-width:760px){.specs-grid{grid-template-columns:1fr}.spec-card{padding:23px}.specs-heading{margin-bottom:32px}}
+    @media(max-width:420px){.spec-row{font-size:.78rem}.spec-card h3{font-size:1.3rem}.spec-level{font-size:.65rem}}
+
   </style>
 </head>
 <body>
@@ -221,7 +255,7 @@
       <a class="brand" href="#home" aria-label="KARZEN home">KAR<span>ZEN</span></a>
       <button class="menu" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
       <nav class="links" id="navLinks">
-        <a href="#about">About</a><a href="#features">Features</a><a href="#modes">Modes</a><a href="#customise">Customise</a><a href="#bot-chase">Time Pass</a>
+        <a href="#about">About</a><a href="#features">Features</a><a href="#modes">Modes</a><a href="#customise">Customise</a><a href="#specs">Specs</a><a href="#bot-chase">Time Pass</a>
       </nav>
       <a class="btn nav-cta" href="https://yatikdev99.itch.io/karzen" target="_blank" rel="noopener">Play KARZEN ↗</a>
     </div>
@@ -370,6 +404,73 @@
       </div>
     </section>
 
+
+
+    <section id="specs" class="specs-section">
+      <div class="wrap">
+        <div class="specs-heading reveal">
+          <div class="eyebrow">Performance & compatibility</div>
+          <h2>CAN YOUR DEVICE<br>RUN <span>KARZEN?</span></h2>
+          <p>Designed with accessibility in mind. Check the minimum and recommended requirements before installing.</p>
+        </div>
+
+        <div class="specs-grid">
+          <article class="spec-card reveal">
+            <div class="spec-card-head">
+              <div class="spec-icon" aria-hidden="true">📱</div>
+              <div><h3>ANDROID</h3><p>Mobile gaming experience</p></div>
+            </div>
+            <div class="spec-level"><span>MINIMUM REQUIREMENTS</span><span class="spec-status">ENTRY LEVEL</span></div>
+            <div class="spec-list">
+              <div class="spec-row"><span>RAM</span><b>2 GB</b></div>
+              <div class="spec-row"><span>Available storage</span><b>16 GB</b></div>
+              <div class="spec-row"><span>Operating system</span><b>Android 8.0+</b></div>
+              <div class="spec-row"><span>Processor</span><b>Quad-core</b></div>
+              <div class="spec-row"><span>Graphics</span><b>OpenGL ES 3.0</b></div>
+            </div>
+            <div class="spec-level recommended"><span>RECOMMENDED</span><span class="spec-status">BEST EXPERIENCE</span></div>
+            <div class="spec-list">
+              <div class="spec-row"><span>RAM</span><b>6 GB</b></div>
+              <div class="spec-row"><span>Available storage</span><b>32 GB</b></div>
+              <div class="spec-row"><span>Operating system</span><b>Android 10.0+</b></div>
+              <div class="spec-row"><span>Processor</span><b>Octa-core</b></div>
+              <div class="spec-row"><span>Graphics</span><b>Adreno 6xx / Mali-G series</b></div>
+            </div>
+            <div class="spec-footer">OPTIMIZED FOR MOBILE GAMING</div>
+          </article>
+
+          <article class="spec-card reveal">
+            <div class="spec-card-head">
+              <div class="spec-icon" aria-hidden="true">🖥️</div>
+              <div><h3>WINDOWS PC</h3><p>Desktop gaming experience</p></div>
+            </div>
+            <div class="spec-level"><span>MINIMUM REQUIREMENTS</span><span class="spec-status">ENTRY LEVEL</span></div>
+            <div class="spec-list">
+              <div class="spec-row"><span>RAM</span><b>6 GB</b></div>
+              <div class="spec-row"><span>Available storage</span><b>16 GB</b></div>
+              <div class="spec-row"><span>Operating system</span><b>Windows 10 64-bit</b></div>
+              <div class="spec-row"><span>Processor</span><b>Intel Core i3 / equivalent</b></div>
+              <div class="spec-row"><span>Graphics</span><b>Intel HD 4000 / equivalent</b></div>
+            </div>
+            <div class="spec-level recommended"><span>RECOMMENDED</span><span class="spec-status">BEST EXPERIENCE</span></div>
+            <div class="spec-list">
+              <div class="spec-row"><span>RAM</span><b>8 GB</b></div>
+              <div class="spec-row"><span>Available storage</span><b>32 GB</b></div>
+              <div class="spec-row"><span>Operating system</span><b>Windows 10 / 11 64-bit</b></div>
+              <div class="spec-row"><span>Processor</span><b>Intel Core i5 / equivalent</b></div>
+              <div class="spec-row"><span>Graphics</span><b>Intel UHD / better</b></div>
+            </div>
+            <div class="spec-footer">OPTIMIZED FOR PC GAMING</div>
+          </article>
+        </div>
+
+        <div class="download-size reveal">
+          <div><small>APPROXIMATE GAME DOWNLOAD SIZE</small><strong>~100 MB</strong></div>
+          <div><small>LIGHTWEIGHT DOWNLOAD</small><strong>ENTER THE ARENA ↗</strong></div>
+          <p>Storage requirements include additional free space and may vary by platform and future updates.</p>
+        </div>
+      </div>
+    </section>
 
     <section id="bot-chase" class="modes-bg">
       <div class="wrap">
